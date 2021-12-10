@@ -28,7 +28,7 @@ class FileReader:
 if __name__ == "__main__":
     file_reader = FileReader('input.txt')
     point_pairs = file_reader.process_file()
-    only_lines = [(p1, p2) for p1, p2 in point_pairs if p1.is_line(p2)]
+    only_lines = [(p1, p2) for p1, p2 in point_pairs if p1.is_valid_line(p2)]
     all_points = reduce(lambda l1, l2: l1 + l2, 
                         (p1.points_in_line(p2) for p1, p2 in only_lines))
     occurrences = Counter(all_points)
@@ -36,4 +36,3 @@ if __name__ == "__main__":
 
     number_of_times_point_appears_at_least_twice = len([v for v in occurrences.values() if v >= 2 ]) 
     print(number_of_times_point_appears_at_least_twice) 
-    

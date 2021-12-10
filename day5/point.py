@@ -12,32 +12,55 @@ class Point:
     def is_diagonal_with_45_degree_slope(self, point):
         return abs((point.y - self.y) / (point.x - self.x)) == 1
 
-    def is_line(self, point):
+    def is_valid_line(self, point):
         return (self.is_horizontal_line(point) or
-                self.is_vertical_line(point)) 
-                #  or self.is_diagonal_with_45_degree_slope(point))
+                self.is_vertical_line(point) or 
+                self.is_diagonal_with_45_degree_slope(point))
 
     def points_in_vertical_line(self, point):
-        min_y = (self.y if self.y < point.y else point.y)
-        max_y = (point.y if point.y > self.y else self.y)
-        return [Point(self.x, i) for i in range(min_y + 1, max_y)]
+        min_y = min(self.y, point.y) 
+        max_y = max(self.y, point.y)
+        return [Point(self.x, i) for i in range(min_y, max_y + 1)]
 
     def points_in_horizontal_line(self, point):
-        min_x = (self.x if self.x < point.x else point.x)
-        max_x = (point.x if point.x > self.x else self.x)
-        return [Point(i, self.y) for i in range(min_x + 1, max_x)]
+        min_x = min(self.x, point.x)
+        max_x = max(self.x, point.x)
+        return [Point(i, self.y) for i in range(min_x, max_x + 1)]
+
+    def points_in_diagonal_line(self, point):
+        min_x = min(self.x, point.x)
+        max_x = max(self.x, point.x)
+        min_y = min(self.y, point.y) 
+        max_y = max(self.y, point.y)
+
+        x = min_x 
+        if self.x < point.x and self.y < point.y or point.x < self.x and point.y < self.y:
+            y = min_y
+            points = []
+            while x <= max_x and y <= max_y:
+                points.append(Point(x, y))
+                x += 1
+                y += 1
+        else:
+            y = max_y
+            points = []
+            while x <= max_x and y >= min_y:
+                points.append(Point(x, y))
+                x += 1
+                y -= 1
+        return points
 
     def points_in_line(self, point):
         points = []
-        points.append(self)
-        points.append(point)
 
         if self == point:
             return [self]
         elif self.is_vertical_line(point):
-            points = points + self.points_in_vertical_line(point)
+            points +=  self.points_in_vertical_line(point)
         elif self.is_horizontal_line(point):
-            points = points + self.points_in_horizontal_line(point)
+            points +=  self.points_in_horizontal_line(point)
+        elif self.is_diagonal_with_45_degree_slope(point):
+            points +=  self.points_in_diagonal_line(point)
 
         return points
 
