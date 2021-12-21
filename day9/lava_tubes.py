@@ -18,90 +18,65 @@ class LavaTubes:
         self._low_points = low_points
 
     def row_length(self):
-        return len(self.heat_map)
-
-    def col_length(self):
         return len(self.heat_map[0])
 
-    def is_left_edge(self, row_index):
-        return row_index == 0
+    def col_length(self):
+        return len(self.heat_map)
 
-    def is_right_edge(self, row_index):
-        return row_index == self.row_length() - 1
+    def is_left_edge(self, loc):
+        return loc.col_idx == 0
 
-    def is_top_edge(self, col_index):
-        return col_index == 0
+    def is_right_edge(self, loc):
+        return loc.col_idx == self.row_length() - 1
 
-    def is_bottom_edge(self, col_index):
-        return col_index == self.col_length() - 1
+    def is_top_edge(self, loc):
+        return loc.row_idx == 0
 
-    def is_top_left_corner(self, row_index, col_index):
-        return self.is_top_edge(col_index) and self.is_left_edge(row_index)
+    def is_bottom_edge(self, loc):
+        return loc.row_idx == self.col_length() - 1
 
-    def is_bottom_left_corner(self, row_index, col_index):
-        return self.is_bottom_edge(col_index) and self.is_left_edge(row_index)
+    def get_loc_above(self, loc):
+        return self.heat_map[loc.row_idx - 1][loc.col_idx]
 
-    def is_top_right_corner(self, row_index, col_index):
-        return self.is_top_edge(col_index) and self.is_right_edge(row_index)
+    def get_loc_below(self, loc):
+        return self.heat_map[loc.row_idx + 1][loc.col_idx]
+
+    def get_loc_right(self, loc):
+        return self.heat_map[loc.row_idx][loc.col_idx + 1]
+
+    def get_loc_left(self, loc):
+        return self.heat_map[loc.row_idx][loc.col_idx - 1]
+
+    def get_adjacent_locs(self, loc):
+        adjacent_locs = []
         
-    def is_bottom_right_corner(self, row_index, col_index):
-        return self.is_bottom_edge(col_index) and self.is_right_edge(row_index)
-    
-    def get_adjacent_locations(self, row_index, col_index):
-        adjacent_locations = []
-        if self.is_top_left_corner(row_index, col_index):
-            adjacent_locations.append(self.heat_map[row_index + 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index + 1])
-        elif self.is_top_right_corner(row_index, col_index):
-            adjacent_locations.append(self.heat_map[row_index - 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index + 1])
-        elif self.is_bottom_right_corner(row_index, col_index):
-            adjacent_locations.append(self.heat_map[row_index - 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index - 1])
-        elif self.is_bottom_left_corner(row_index, col_index):
-            adjacent_locations.append(self.heat_map[row_index + 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index - 1])
-        elif self.is_top_edge(col_index):
-            adjacent_locations.append(self.heat_map[row_index - 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index + 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index + 1])
-        elif self.is_bottom_edge(col_index):
-            adjacent_locations.append(self.heat_map[row_index - 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index + 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index - 1])
-        elif self.is_left_edge(row_index):
-            adjacent_locations.append(self.heat_map[row_index][col_index + 1])
-            adjacent_locations.append(self.heat_map[row_index][col_index - 1])
-            adjacent_locations.append(self.heat_map[row_index + 1][col_index])
-        elif self.is_right_edge(row_index):
-            adjacent_locations.append(self.heat_map[row_index][col_index + 1])
-            adjacent_locations.append(self.heat_map[row_index][col_index - 1])
-            adjacent_locations.append(self.heat_map[row_index - 1][col_index])
-        else:
-            adjacent_locations.append(self.heat_map[row_index - 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index + 1][col_index])
-            adjacent_locations.append(self.heat_map[row_index][col_index - 1])
-            adjacent_locations.append(self.heat_map[row_index][col_index + 1])
-        return adjacent_locations 
+        if not self.is_top_edge(loc):
+            adjacent_locs.append(self.get_loc_above(loc))
+        if not self.is_bottom_edge(loc):
+            adjacent_locs.append(self.get_loc_below(loc))
+        if not self.is_right_edge(loc):
+            adjacent_locs.append(self.get_loc_right(loc))
+        if not self.is_left_edge(loc):
+            adjacent_locs.append(self.get_loc_left(loc))
 
-    def is_low_point(self, curr_location, locations):
-        for location in locations:
-            if location <= curr_location:
+        return adjacent_locs
+
+    def is_low_point(self, curr_loc, adjacent_locs):
+        for adjacent_loc in adjacent_locs:
+            if adjacent_loc <= curr_loc:
                 return False
         return True
-
+    
     def find_low_points(self):
-        for row_index in range(len(self.heat_map)):
-            # print(f' row index {row_index}')
-            for col_index in range(len(self.heat_map[row_index])):
-                # print(f' col index {col_index}')
-                adjacent_locations = self.get_adjacent_locations(row_index, col_index)
-                curr_location = self.heat_map[row_index][col_index]
-                if self.is_low_point(self.heat_map[row_index][col_index], adjacent_locations):
-                    self.low_points += (1 + curr_location)
+        for row_idx in range(len(self.heat_map)):
+            for col_idx in range(len(self.heat_map[row_idx])):
+                curr_loc = self.heat_map[row_idx][col_idx]
+                adjacent_locs = self.get_adjacent_locs(curr_loc)
+                if self.is_low_point(curr_loc, adjacent_locs):
+                    self.low_points += (1 + curr_loc.height)
 
 if __name__ == "__main__":
-    heat_map = FileReader('input.txt').process_file()
+    heat_map = FileReader('tests/test-input.txt').process_file()
     lava_tubes = LavaTubes(heat_map)
     lava_tubes.find_low_points() 
     print(f'total number of low points: {lava_tubes.low_points}')
