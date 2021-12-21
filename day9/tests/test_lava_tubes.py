@@ -1,5 +1,4 @@
 import unittest
-
 import os
 import sys
 sys.path.append(os.path.abspath('..'))
@@ -15,4 +14,11 @@ class SimulationTestCase(unittest.TestCase):
         heat_map = self.file_reader.process_file()
         lt = LavaTubes(heat_map)
         lt.find_low_points()
-        self.assertEqual(lt.low_points, 15)
+        self.assertEqual(lt.sum_of_risk_lvl(), 15)
+
+    def test_answer_part_2(self):
+        heat_map = self.file_reader.process_file()
+        lt = LavaTubes(heat_map)
+        lt.find_low_points()
+        lt.find_basins()
+        self.assertEqual(lt.result_part_two(), 1134)

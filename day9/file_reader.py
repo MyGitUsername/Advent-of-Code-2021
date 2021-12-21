@@ -1,3 +1,5 @@
+from location import Location
+
 class FileReader:
     def __init__(self, file_name):
         self._file_name = file_name;
@@ -8,6 +10,6 @@ class FileReader:
 
     def process_file(self):
         f = open(self.file_name, 'r')
-        return [list(int(num) for num in line.strip()) for line in f]
-
-
+        lines = f.readlines()
+        f.close()
+        return [list(Location(int(row), int(col), int(lines[row][col])) for col in range(len(lines[row][:-1]))) for row in range(len(lines))]

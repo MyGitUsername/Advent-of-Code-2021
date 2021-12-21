@@ -1,9 +1,11 @@
 from file_reader import FileReader
+from functools import reduce
 
 class LavaTubes:
     def __init__(self, heat_map): 
         self._heat_map = heat_map
-        self._low_points = 0
+        self._low_points = set()
+        self._basins = list()
 
     @property
     def heat_map(self):
@@ -13,9 +15,17 @@ class LavaTubes:
     def low_points(self):
         return self._low_points
 
+    @property
+    def basins(self):
+        return self._basins
+
     @low_points.setter
     def low_points(self, low_points):
         self._low_points = low_points
+
+    @basins.setter
+    def basins(self, basins):
+        self._basins = basins
 
     def row_length(self):
         return len(self.heat_map[0])
@@ -73,10 +83,44 @@ class LavaTubes:
                 curr_loc = self.heat_map[row_idx][col_idx]
                 adjacent_locs = self.get_adjacent_locs(curr_loc)
                 if self.is_low_point(curr_loc, adjacent_locs):
-                    self.low_points += (1 + curr_loc.height)
+                    self.low_points.add(curr_loc)
 
+    def find_basin(self, low_point):
+        basin = set()
+        self.find_basin_aux(low_point, basin)
+
+        return basin
+
+    def find_basin_aux(self, loc, basin):
+        if loc not in basin and loc.height != 9:
+            basin.add(loc)
+            adjacent_locs = self.get_adjacent_locs(loc)
+            for adjacent_loc in adjacent_locs:
+                self.find_basin_aux(adjacent_loc, basin)
+
+    def find_basins(self):
+        if len(self.low_points) == 0:
+            self.find_low_points()
+
+        for lp in self.low_points:
+            self.basins.append(self.find_basin(lp))
+
+    def sum_of_risk_lvl(self):
+        return 1 + reduce(lambda a, b: (1 + a + b), [lp.height for lp in self.low_points])
+
+    def find_three_largest_basins(self):
+        sorted_basins = sorted(self.basins, key=lambda a: len(a), reverse=True)
+        return sorted_basins[0], sorted_basins[1], sorted_basins[2]
+
+    def result_part_two(self):
+        return reduce(lambda a, b: a * b, [len(basin) for basin in self.find_three_largest_basins()])
+                
 if __name__ == "__main__":
-    heat_map = FileReader('tests/test-input.txt').process_file()
+    heat_map = FileReader('input.txt').process_file()
     lava_tubes = LavaTubes(heat_map)
     lava_tubes.find_low_points() 
-    print(f'total number of low points: {lava_tubes.low_points}')
+    lava_tubes.find_basins() 
+    print(f'sum of risk: {lava_tubes.sum_of_risk_lvl()}')
+    print(f'low_points: {lava_tubes.low_points}')
+    print(f'basins: {lava_tubes.basins}')
+    print(f'result part two: {lava_tubes.result_part_two()}')
