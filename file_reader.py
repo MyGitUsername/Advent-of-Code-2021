@@ -7,7 +7,6 @@ class FileReader:
         return self._file_name
 
     def process_file(self, Class):
-        f = open(self.file_name, 'r')
-        lines = f.readlines()
-        f.close()
-        return [list(Class(int(row), int(col), int(lines[row][col])) for col in range(len(lines[row][:-1]))) for row in range(len(lines))]
+        with open(self.file_name, 'r') as f:
+            lines = f.readlines()
+        return [list(Class(int(row_idx), int(col_idx), int(char)) for col_idx, char in enumerate(line[:-1])) for row_idx, line in enumerate(lines)]
