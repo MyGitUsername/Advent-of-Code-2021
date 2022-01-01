@@ -1,5 +1,3 @@
-from .cell import Cell
-
 class TwoDimensionalArray:
     def __init__(self, two_dimensional_array): 
         self._two_dimensional_array = two_dimensional_array
