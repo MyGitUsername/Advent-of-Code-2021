@@ -1,3 +1,4 @@
+import os
 from ..file_reader import FileReader
 from ..two_dimensional_array import TwoDimensionalArray
 from .octopus import Octopus
@@ -61,7 +62,7 @@ class Simulation:
             self.run_step(i)
 
 if __name__ == "__main__":
-    input = FileReader('AoC/day11/input.txt').process_file(Octopus)
+    input = FileReader(os.path.dirname(__file__) + '/input.txt').process_file(Octopus)
     board = TwoDimensionalArray(input)
     sim = Simulation(TwoDimensionalArray(input), 1000)
     sim.run_steps()
