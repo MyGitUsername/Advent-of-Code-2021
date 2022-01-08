@@ -1,6 +1,8 @@
 from .file_processor import FileProcessor
 import os
 import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 class Origami():
     def __init__(self, dots, instructions):
@@ -38,10 +40,21 @@ class Origami():
                 transposed = self.transpose(dot, direction, position)
                 transposed_dots.add(transposed) 
             self.dots = transposed_dots
+    
+    def plot(self):
+        xpoints = np.array([dot[0] for dot in self.dots])
+        ypoints = np.array([dot[1] for dot in self.dots])
+
+        plt.xlim([640,800])
+        plt.axis('scaled')
+        plt.ylim([-2,7])
+        plt.scatter(xpoints, ypoints)
+        plt.show()
 
 if __name__ == "__main__":
     fp = FileProcessor(os.path.dirname(__file__) + '/input.txt')
     origami = Origami(fp.dots(),fp.instructions())
-    origami.simulate(1)
+    origami.simulate()
     print(f'Number of dots visible: {origami.number_of_dots()}')
+    origami.plot()
 
