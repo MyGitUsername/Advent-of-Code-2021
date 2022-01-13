@@ -41,20 +41,27 @@ class Origami():
                 transposed_dots.add(transposed) 
             self.dots = transposed_dots
     
-    def plot(self):
+    def print(self):
         xpoints = np.array([dot[0] for dot in self.dots])
         ypoints = np.array([dot[1] for dot in self.dots])
-
-        plt.xlim([640,800])
-        plt.axis('scaled')
-        plt.ylim([-2,7])
-        plt.scatter(xpoints, ypoints)
-        plt.show()
+        minX = min(xpoints)
+        maxX = max(xpoints)
+        minY = min(ypoints)
+        maxY = max(ypoints)
+        for y in range(minY, maxY + 1):
+            s = ''
+            for x in range(minX, maxX + 1):
+                point = (x, y)
+                if point in self.dots:
+                    s = s + '#'
+                else:
+                    s = s + '.'
+            print(f'{s}')
 
 if __name__ == "__main__":
     fp = FileProcessor(os.path.dirname(__file__) + '/input.txt')
     origami = Origami(fp.dots(),fp.instructions())
     origami.simulate()
     print(f'Number of dots visible: {origami.number_of_dots()}')
-    origami.plot()
+    origami.print()
 
