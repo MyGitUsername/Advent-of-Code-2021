@@ -17,7 +17,7 @@ class Origami():
         y = line_of_sym * 2 - y
         return x, y
 
-    def transpose_right(self, dot, line_of_sym):
+    def transpose_left(self, dot, line_of_sym):
         x, y = dot
         x = line_of_sym * 2 - x
         return x, y
@@ -26,8 +26,8 @@ class Origami():
         x, y = dot
         if direction == 'y' and y > line_of_sym:
             return self.transpose_up(dot, line_of_sym)
-        elif direction == 'x'and x < line_of_sym:
-            return self.transpose_right(dot, line_of_sym)
+        elif direction == 'x'and x > line_of_sym:
+            return self.transpose_left(dot, line_of_sym)
         return dot
     
     def simulate(self, num_folds = sys.maxsize):
