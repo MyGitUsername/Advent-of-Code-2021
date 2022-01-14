@@ -10,20 +10,20 @@ class RunTestCase(unittest.TestCase):
         self.run = Run(self.fp.polymer_template(), self.fp.pair_insertion_rules())
 
     def test_run_one_step(self):
-        res = self.run.run(1)
-        self.assertEqual(res, 'NCNBCHB')
+        polymer = self.run.run(1)
+        self.assertEqual(polymer, 'NCNBCHB')
 
     def test_run_two_steps(self):
-        res = self.run.run(2)
-        self.assertEqual(res, 'NBCCNBBBCBHCB')
+        polymer = self.run.run(2)
+        self.assertEqual(polymer, 'NBCCNBBBCBHCB')
 
     def test_run_three_steps(self):
-        res = self.run.run(3)
-        self.assertEqual(res, 'NBBBCNCCNBBNBNBBCHBHHBCHB')
+        polymer = self.run.run(3)
+        self.assertEqual(polymer, 'NBBBCNCCNBBNBNBBCHBHHBCHB')
 
     def test_run_four_steps(self):
-        res = self.run.run(4)
-        self.assertEqual(res, 'NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB')
+        polymer = self.run.run(4)
+        self.assertEqual(polymer, 'NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB')
 
     def test_result(self):
         polymer = self.run.run(10)
