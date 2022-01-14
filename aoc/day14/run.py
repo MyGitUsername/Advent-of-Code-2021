@@ -29,7 +29,7 @@ class Run():
 
     def get_result(self, polymer):
         counter = Counter(polymer)
-        _, most_common = counter.most_common(1)[0]
+        _, most_common = counter.most_common()[0]
         _, least_common = counter.most_common()[-1]
         return most_common - least_common
 
