@@ -21,10 +21,8 @@ class Run():
         new_polymer = self.polymer_template
         for _ in range(0, steps):
             modified_polymer = new_polymer[0]
-            for j, char in enumerate(new_polymer):
-                if j == 0:
-                    continue
-                pair = new_polymer[j - 1] + char
+            for j in range(len(new_polymer) - 1):
+                pair = new_polymer[j] + new_polymer[j + 1]
                 modified_polymer += self.execute_rule(pair)
             new_polymer = modified_polymer
         return new_polymer
