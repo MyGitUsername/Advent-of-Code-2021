@@ -10,7 +10,6 @@ class RunTestCase(unittest.TestCase):
         self.run = Run(self.fp.polymer_template(), self.fp.pair_insertion_rules())
 
     def test_run_one_step(self):
-        pdb.set_trace()
         self.run.run(1)
         self.assertEqual(self.run.final_polymer, 'NCNBCHB')
 
@@ -26,7 +25,12 @@ class RunTestCase(unittest.TestCase):
         self.run.run(4)
         self.assertEqual(self.run.final_polymer, 'NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB')
 
-    def test_result(self):
+    def test_result_recursive(self):
+        self.run.run_recursive(10)
+        res = self.run.get_result_recursive()
+        self.assertEqual(res, 1588)
+
+    def test_result_non_recursive(self):
         self.run.run(10)
         res = self.run.get_result()
         self.assertEqual(res, 1588)
