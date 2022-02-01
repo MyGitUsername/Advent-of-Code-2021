@@ -23,7 +23,7 @@ class Pathfinder:
         
         while len(unvisited) != 0:
             current_vertex =  self.visit_closest(unvisited, table)
-            unvisited_neighbors = set(self.cavern.get_adjacent_locs(current_vertex)) & unvisited
+            unvisited_neighbors = [v for v in self.cavern.get_adjacent_locs(current_vertex) if table[v]['prev_vertex'] == None]
             for neighbor in unvisited_neighbors:
                 distance_to_start = table[current_vertex]['min_dist'] + neighbor.value
                 if distance_to_start < table[neighbor]['min_dist']:
@@ -41,6 +41,8 @@ class Pathfinder:
 if __name__ == "__main__":
     fr = FileReader(os.path.dirname(__file__) + '/input.txt')
     cells = fr.process_file(Cell)
-    pf = Pathfinder(Cavern(cells))
+    small_cavern = Cavern(cells)
+    large_cavern = small_cavern.gen_large_cavern()
+    pf = Pathfinder(large_cavern)
     shortest_path = pf.dijkstra()
     print(f'shortest_path: {shortest_path}')
