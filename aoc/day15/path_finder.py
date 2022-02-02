@@ -4,10 +4,37 @@ from .cavern import Cavern
 import os
 import sys
 from typing import Set
+import heapq
 
 class Pathfinder:
     def __init__(self, cavern: Cavern):
         self.cavern = cavern
+        
+    def dijkstra_with_priority_queue(self) -> int:
+        visited: Set[Cell] = set()
+        start_vertex: Cell = self.cavern.get_cell(0, 0)
+        dist = dict()
+
+        table = []
+        for v in self.cavern.flatten():
+            if v == start_vertex:
+                heapq.heappush(table, (0, v))
+                continue
+            heapq.heappush(table, (sys.maxsize, v))
+            dist[v] = sys.maxsize
+        
+        while len(table) != 0:
+            min_dist, current_vertex =  heapq.heappop(table)
+            neighbors = [v for v in self.cavern.get_adjacent_locs(current_vertex)]
+            for neighbor in neighbors:
+                if neighbor not in visited:
+                    distance_to_start = min_dist + neighbor.value
+                    if distance_to_start < dist[neighbor]:
+                        dist[neighbor] = distance_to_start
+                        heapq.heappush(table, (distance_to_start, neighbor))
+            visited.add(current_vertex)
+
+        return dist[self.cavern.end()]
         
     def dijkstra(self) -> int:
         visited: Set[Cell] = set()
@@ -44,5 +71,5 @@ if __name__ == "__main__":
     small_cavern = Cavern(cells)
     large_cavern = small_cavern.gen_large_cavern()
     pf = Pathfinder(large_cavern)
-    shortest_path = pf.dijkstra()
+    shortest_path = pf.dijkstra_with_priority_queue()
     print(f'shortest_path: {shortest_path}')
