@@ -35,7 +35,10 @@ class PacketDecoder:
         self._packets = packets
 
     def decode(self, blob):
-        if len(blob) > 6:
+        # import pdb
+        # pdb.set_trace()
+
+        if len(blob) >= pa.Packet.MIN_PACKET_LEN:
             typeID = decode_typeID(blob)
             version = decode_version(blob)
 
@@ -49,7 +52,7 @@ class PacketDecoder:
 if __name__ == "__main__":
     fr = FileReader(os.path.dirname(__file__) + '/input.txt')
     hex_blob = fr.lines()[0]
-    pd = PacketDecoder(hex_blob) # 'A0016C880162017C3686B18A3D4780')
+    pd = PacketDecoder('A0016C880162017C3686B18A3D4780') # 'A0016C880162017C3686B18A3D4780')
     pd.decode(pd.binary)
     sum_of_versions = sum([p.version for p in pd.packets])
     print(f'sum of versions: {sum_of_versions}')

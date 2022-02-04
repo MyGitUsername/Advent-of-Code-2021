@@ -1,5 +1,6 @@
 class Packet:
     LITERAL = 4
+    MIN_PACKET_LEN = 11
 
     def __init__(self, blob, version, typeID):
         self._blob = blob
