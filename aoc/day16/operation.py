@@ -19,13 +19,13 @@ class Operation(pa.Packet):
         self._length_type_id = length_type_id
 
     def decode(self):
+        field_start = Operation.LTI_IDX + 1
+
         if self.length_type_id == 0:
-            fifteen_bit_field_start = Operation.LTI_IDX + 1
-            fifteen_bit_field_end = fifteen_bit_field_start + Operation.LTI_0_LEN
-            return self.blob[fifteen_bit_field_end:]
+            subpacket_start = field_start + Operation.LTI_0_LEN
         elif self.length_type_id == 1:
-            eleven_bit_field_start = Operation.LTI_IDX + 1
-            subpacket_start = eleven_bit_field_start + Operation.LTI_1_LEN
-            return self.blob[subpacket_start:]
+            subpacket_start = field_start + Operation.LTI_1_LEN
         else:
             raise ValueError('length type id is not a valid number: must be 1 or 0')
+
+        return self.blob[subpacket_start:]
